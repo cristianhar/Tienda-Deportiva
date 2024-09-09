@@ -1,0 +1,90 @@
+<div class="bg-white p-4 rounded shadow">
+  <div class="flex items-center mb-4">
+    <i class="bi bi-facebook text-blue-500"></i>
+    <h2 class="text-xl font-semibold mb-2 ml-2">Filtros</h2>
+  </div>
+  <hr />
+
+  <div class="mb-4">
+    <div class="flex items-center justify-between mt-4 mb-4">
+      <h3 class="text-sm font-bold">Filtros aplicados</h3>
+      <button
+        class="text-black text-sm inline border-b-2 border-black hover:border-gray-800"
+        >Limpiar</button
+      >
+    </div>
+
+    <div class="flex flex-wrap">
+      <span
+        class="bg-gray-200 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded"
+        >All</span
+      >
+      <span
+        class="bg-gray-200 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded"
+        >Camisetas deportivas</span
+      >
+      <span
+        class="bg-gray-200 text-gray-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded"
+        >Azul</span
+      >
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <h3 class="text-sm font-bold mb-2">Categoría</h3>
+    <label class="block text-gray-700">
+      <input type="checkbox" class="mr-2" checked />
+      All
+    </label>
+    <label class="block text-gray-700">
+      <input type="checkbox" class="mr-2" checked />
+      Camisetas deportivas
+    </label>
+  </div>
+
+  <div class="mb-4">
+    <h3 class="text-sm font-bold mb-2">Estado stock</h3>
+    <label class="block text-gray-700">
+      <input type="checkbox" class="mr-2" />
+      En stock
+    </label>
+    <label class="block text-gray-700">
+      <input type="checkbox" class="mr-2" />
+      Sin stock
+    </label>
+  </div>
+
+  <!-- Tamaño -->
+  <div class="mb-4">
+    <h3 class="text-sm font-bold mb-2 flex items-center">
+      <span class="mr-2 w-1/2">Tamaño</span>
+    </h3>
+    <select
+      class="block w-full mt-1 border border-solid border-gray-300 p-2 rounded"
+    >
+      <option>Seleccionar tamaño</option>
+      <option>Small</option>
+      <option>Medium</option>
+      <option>Large</option>
+    </select>
+  </div>
+
+  <div>
+    <h3 class="text-sm font-bold mb-2">Color</h3>
+    <div class="flex items-center space-x-4 mb-2">
+      <span class="h-6 w-6 rounded-full bg-red-500 cursor-pointer"></span>
+      <span class="h-6 w-6 rounded-full bg-orange-500 cursor-pointer"></span>
+      <span class="h-6 w-6 rounded-full bg-green-500 cursor-pointer"></span>
+      <span class="h-6 w-6 rounded-full bg-green-300 cursor-pointer"></span>
+      <span class="h-6 w-6 rounded-full bg-blue-500 cursor-pointer"></span>
+      <span class="h-6 w-6 rounded-full bg-pink-500 cursor-pointer"></span>
+    </div>
+    <div class="flex items-center space-x-4">
+      <span class="h-6 w-6 rounded-full bg-pink-300 cursor-pointer"></span>
+      <span class="h-6 w-6 rounded-full bg-green-200 cursor-pointer"></span>
+      <span class="h-6 w-6 rounded-full bg-fuchsia-500 cursor-pointer"></span>
+      <span class="h-6 w-6 rounded-full bg-black cursor-pointer"></span>
+      <span class="h-6 w-6 rounded-full bg-white cursor-pointer"></span>
+    </div>
+  </div>
+</div>
