@@ -1,0 +1,46 @@
+<!-- Contenedor para el select, input, "X" y lupa -->
+<div class="flex items-center w-full">
+  <!-- Select para elegir la categoría de búsqueda -->
+  <select class="border rounded-l p-2 bg-gray-300">
+    <option>All</option>
+    <option>Camisetas deportivas</option>
+    <option>Shorts deportivos</option>
+    <option>Zapatillas deportivas</option>
+  </select>
+
+  <!-- Input para escribir lo que deseas buscar -->
+  <div class="relative flex-grow">
+    <input
+      type="text"
+      class="block w-full p-2 border-t border-b border-gray-300 bg-gray-300 pr-10 pl-4"
+      placeholder="Escribe lo que deseas buscar..."
+      id="searchInput"
+    />
+
+    <!-- Botón para limpiar la búsqueda (la "X") -->
+    <button
+      class="absolute right-8 top-1/2 transform -translate-y-1/2 text-black"
+      onclick="document.getElementById('searchInput').value = '';"
+    >
+      &#10005; | <!-- Unicode para la X -->
+    </button>
+
+    <!-- Icono de la lupa -->
+    <svg
+      class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M21 21l-4.35-4.35M11 4a7 7 0 100 14 7 7 0 000-14z"></path>
+    </svg>
+  </div>
+
+  <!-- Cierre del contenedor del input -->
+  <div class="border rounded-r"></div>
+</div>
