@@ -1,4 +1,5 @@
 ---
+import Layout from "../layouts/Layout.astro";
 import Header from "../components/header.astro";
 import Footer from "../components/footer.astro";
 import Paginacion from "../components/paginacion.astro";
@@ -8,27 +9,29 @@ import Filtros from "../components/filtros.astro";
 import ProductosList from "../components/productos-list.astro";
 ---
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Productos</title>
-</head>
-<Header />
-<body class="bg-gray-100 min-h-screen flex flex-col">
-  <div class="container mx-auto mt-4 px-4 w-full">
-    <div class="hidden sm:flex justify-between items-center mb-4 w-full">
-      <Buscador />
-    </div>
-    <div class="flex flex-wrap -mx-4">
-      <aside class="hidden md:block w-full md:w-1/4 px-4 mb-8">
-        <Filtros />
-      </aside>
-      <div class="w-full md:w-3/4 px-4">
-        <Ordenar />
-        <ProductosList />
-        <Paginacion />
+<Layout title="Productos">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Productos</title>
+  </head>
+  <Header />
+  <body class="bg-gray-100 min-h-screen flex flex-col">
+    <div class="container mx-auto mt-4 px-4 w-full">
+      <div class="hidden sm:flex justify-between items-center mb-4 w-full">
+        <Buscador />
+      </div>
+      <div class="flex flex-wrap -mx-4">
+        <aside class="hidden md:block w-full md:w-1/4 px-4 mb-8">
+          <Filtros />
+        </aside>
+        <div class="w-full md:w-3/4 px-4">
+          <Ordenar />
+          <ProductosList />
+          <Paginacion />
+        </div>
       </div>
     </div>
-  </div>
-</body>
-<Footer />
+  </body>
+  <Footer />
+</Layout>
