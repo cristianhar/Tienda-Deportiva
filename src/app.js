@@ -36,11 +36,7 @@ app.use('/api', authRoutes);
 // Rutas de productos protegidas por autenticación
 app.use('/api', isAuthenticated, productRoutes); // Agregar rutas de productos aquí
 
-// Iniciar el servidor
-/**
- * The port number for the server.
- * @type {number}
- */
+// Ruta de prueba
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
