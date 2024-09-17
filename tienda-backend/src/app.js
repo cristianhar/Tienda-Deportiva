@@ -70,7 +70,8 @@ async function iniciarServer() {
 
     // Iniciar el servidor Express
     app.listen(PORT, () => {
-        console.log(`Servidor corriendo en http://localhost:${PORT}`);
+        console.log(`Servidor BACKEND API-REST corriendo en http://localhost:${PORT}`);
+        console.log(`Servidor frontend corriendo en http://localhost:4321`);
         console.log('Servidor de Cristianhar iniciado correctamente');
         console.log('Aprendiz de Desarrollo de Software');
         console.log('Tienda de Cristianhar');

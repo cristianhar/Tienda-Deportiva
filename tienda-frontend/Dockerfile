@@ -12,7 +12,7 @@ RUN npm install
 
 # Copiamos el resto del código del proyecto al contenedor
 COPY . .
-
+RUN npx tsc
 # Expone el puerto 4321 para el servidor de desarrollo
 EXPOSE 4321
 
