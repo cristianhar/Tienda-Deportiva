@@ -1,19 +1,17 @@
-# Usar una imagen base de Node.js
-FROM node:18
+# Dockerfile
+FROM node:20-buster 
 
-# Crear y establecer el directorio de trabajo en el contenedor
-WORKDIR /app
+# Instala el cliente MySQL
+RUN apt-get update && apt-get install -y default-mysql-client && rm -rf /var/lib/apt/lists/*
 
-# Copiar los archivos package.json y package-lock.json para instalar dependencias
+
+# Copia tu aplicación
+WORKDIR /usr/src/app
 COPY package*.json ./
-
-# Instalar las dependencias del proyecto
 RUN npm install
-
-# Copiar el resto de los archivos de la aplicación
 COPY . .
 
-# Exponer el puerto que la aplicación usa
+# Expone el puerto
 EXPOSE 3000
 
 # Comando para iniciar la aplicación
