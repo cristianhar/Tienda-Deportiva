@@ -1,0 +1,163 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/header.astro";
+import Footer from "../components/footer.astro";
+---
+
+<Layout title="Crear Producto">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crear Producto</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+
+  <Header />
+
+  <div class="container mx-auto p-4">
+    <h2 class="text-2xl font-semibold mb-4">Crear Producto</h2>
+    <form id="crearProductoForm" class="bg-white p-6 rounded shadow">
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="nombre">
+          Nombre del Producto
+        </label>
+        <input
+          id="nombre"
+          type="text"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+          placeholder="Nombre del producto"
+        />
+      </div>
+
+      <div class="mb-4">
+        <label
+          class="block text-gray-700 text-sm font-bold mb-2"
+          for="descripcion"
+        >
+          Descripción
+        </label>
+        <textarea
+          id="descripcion"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+          placeholder="Descripción del producto"></textarea>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="precio">
+          Precio
+        </label>
+        <input
+          id="precio"
+          type="number"
+          step="0.01"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+          placeholder="Precio"
+        />
+      </div>
+
+      <div class="mb-4">
+        <label
+          class="block text-gray-700 text-sm font-bold mb-2"
+          for="precioOriginal"
+        >
+          Precio Original (Opcional)
+        </label>
+        <input
+          id="precioOriginal"
+          type="number"
+          step="0.01"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+          placeholder="Precio Original"
+        />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">
+          ¿Está en descuento?
+        </label>
+        <input id="descuento" type="checkbox" />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="imagen">
+          URL de la Imagen
+        </label>
+        <input
+          id="imagen"
+          type="text"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+          placeholder="URL de la imagen"
+        />
+      </div>
+
+      <button
+        class="bg-blue-500 text-white px-4 py-2 rounded"
+        type="button"
+        onclick="crearProducto()"
+      >
+        Crear Producto
+      </button>
+    </form>
+  </div>
+
+  <Footer />
+
+  <script is: inline>
+    async function crearProducto() {
+      const nombre = document.getElementById("nombre").value;
+      const descripcion = document.getElementById("descripcion").value;
+      const precio = parseFloat(document.getElementById("precio").value);
+      const precioOriginal = parseFloat(
+        document.getElementById("precioOriginal").value
+      );
+      const descuento = document.getElementById("descuento").checked;
+      const imagen = document.getElementById("imagen").value;
+
+      // Validaciones
+      if (!nombre || !precio) {
+        alert("Por favor, complete todos los campos obligatorios.");
+        return;
+      }
+
+      if (isNaN(precio) || precio < 0) {
+        alert("Por favor, ingrese un precio válido.");
+        return;
+      }
+
+      if (precioOriginal && (isNaN(precioOriginal) || precioOriginal < 0)) {
+        alert("El precio original debe ser un número válido.");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:3000/api/productos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // Incluir credenciales para autenticación
+          body: JSON.stringify({
+            nombre,
+            descripcion,
+            precio,
+            precioOriginal: isNaN(precioOriginal) ? null : precioOriginal, // Convertir a null si no es un número
+            descuento,
+            imagen,
+          }),
+        });
+
+        if (response.ok) {
+          alert("Producto creado exitosamente");
+          window.location.href = "/productos"; // Redirigir a la lista de productos
+        } else {
+          const data = await response.json();
+          alert(data.message || "Error al crear el producto");
+        }
+      } catch (error) {
+        alert(
+          "Error al enviar el formulario. Por favor, inténtelo de nuevo más tarde."
+        );
+      }
+    }
+  </script>
+</Layout>
