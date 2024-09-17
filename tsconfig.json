@@ -1,3 +1,20 @@
 {
-  "extends": "astro/tsconfigs/strict"
+  "compilerOptions": {
+    "module": "commonjs",                          /* Especifica el tipo de módulo generado. CommonJS es común en entornos Node.js. */
+    "target": "es6",                              /* Especifica la versión de ECMAScript que debe ser el código de salida. */
+    "rootDir": "./src",                           /* Especifica la carpeta raíz dentro de tus archivos fuente. */
+    "outDir": "./src/dist",                           /* Especifica la carpeta de salida para todos los archivos emitidos. */
+    "esModuleInterop": true,                     /* Habilita la interoperabilidad con módulos CommonJS, facilitando la importación. */
+    "forceConsistentCasingInFileNames": true,    /* Asegura que las importaciones sean consistentes en cuanto a mayúsculas y minúsculas. */
+    "strict": true,                              /* Habilita todas las opciones de verificación estricta. */
+    "skipLibCheck": true                         /* Omite la verificación de tipo en los archivos .d.ts para acelerar la compilación. */
+  },
+  "include": [
+    "src/**/*"                                   /* Incluye todos los archivos .ts dentro de la carpeta src. */
+],
+  "exclude": [
+    "node_modules",                             /* Excluye la carpeta node_modules, que no necesita ser compilada. */
+
+    "**/*.test.ts"                              /* Opcional: Excluye archivos de prueba si no deseas compilarlos. */
+  ]
 }
