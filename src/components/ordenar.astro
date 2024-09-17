@@ -1,5 +1,24 @@
-<!-- Opciones de Orden -->
 <div class="flex justify-end items-center mb-4">
-  <button class="p-2 border border-solid border-black">Ordenar</button>
-  <i class="bi bi-facebook"></i>
+  <div class="relative">
+    <button
+      class="p-2 border-2 border-solid border-black h-auto rounded-md"
+      onclick="menu()"
+    >
+      <i class="bi bi-filter-left"></i> Ordenar
+    </button>
+    <div
+      id="dropdown"
+      class="absolute right-0 mt-2 bg-white border border-solid border-black rounded-md shadow-md hidden"
+    >
+      <ul class="py-2">
+        <li class="px-4 py-2 cursor-pointer" onclick="ascendente()">
+          Menor a mayor precio
+        </li>
+        <li class="px-4 py-2 cursor-pointer" onclick="descendente()">
+          Mayor a menor precio
+        </li>
+      </ul>
+    </div>
+  </div>
 </div>
+<script is:inline src="/src/dist/orden.js"></script>
