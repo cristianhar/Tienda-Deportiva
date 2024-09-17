@@ -58,7 +58,7 @@ async function iniciarServer() {
         } catch (error) {
             console.error('Error conectando a MySQL, reintentando...', error);
             intentos -= 1;
-            await new Promise(resolve => setTimeout(resolve, 30000)); // Espera 10 segundos
+            await new Promise(resolve => setTimeout(resolve, 10000)); // Espera 10 segundos
 
         }
     }
