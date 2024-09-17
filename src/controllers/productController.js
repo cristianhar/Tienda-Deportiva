@@ -18,10 +18,22 @@ export const getProducts = async (req, res) => {
 export const createProduct = async (req, res) => {
   const { nombre, descripcion, precio, precioOriginal, descuento, imagen } = req.body;
 
+  // Asegúrate de que los valores numéricos sean correctos
+  const precioDecimal = parseFloat(precio);
+  const precioOriginalDecimal = precioOriginal ? parseFloat(precioOriginal) : null;
+
+  // Definir el valor máximo permitido para precioOriginal
+  const precioMaximo = 99999999.99;
+
+  // Validar precioOriginal
+  if (precioOriginalDecimal && precioOriginalDecimal > precioMaximo) {
+    return res.status(400).json({ message: 'El precio original es demasiado alto.' });
+  }
+
   try {
     const [result] = await pool.query(
       'INSERT INTO productos (nombre, descripcion, precio, precioOriginal, descuento, imagen) VALUES (?, ?, ?, ?, ?, ?)',
-      [nombre, descripcion, precio, precioOriginal, descuento, imagen]
+      [nombre, descripcion, precioDecimal, precioOriginalDecimal, descuento, imagen]
     );
 
     res.status(201).json({ message: 'Producto creado exitosamente', id: result.insertId });
@@ -34,12 +46,12 @@ export const createProduct = async (req, res) => {
 // Editar producto
 export const updateProduct = async (req, res) => {
   const { id } = req.params;
-  const { nombre, descripcion, precio, imagen } = req.body;
+  const { nombre, descripcion, precio, precioOriginal, imagen } = req.body;
 
   try {
     const [result] = await pool.query(
-      'UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, imagen = ? WHERE id = ?',
-      [nombre, descripcion, precio, imagen, id]
+      'UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, precioOriginal = ?, imagen = ? WHERE id = ?',
+      [nombre, descripcion, precio, precioOriginal, imagen, id]
     );
     res.status(200).json({ message: 'Producto actualizado exitosamente' });
   } catch (error) {
