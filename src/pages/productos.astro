@@ -12,26 +12,66 @@ import ProductosList from "../components/productos-list.astro";
 <Layout title="Productos">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Productos</title>
   </head>
+
   <Header />
+
   <body class="bg-gray-100 min-h-screen flex flex-col">
     <div class="container mx-auto mt-4 px-4 w-full">
-      <div class="hidden sm:flex justify-between items-center mb-4 w-full">
+      <div class="flex justify-between items-center mb-4 w-full">
         <Buscador />
       </div>
       <div class="flex flex-wrap -mx-4">
-        <aside class="hidden md:block w-full md:w-1/4 px-4 mb-8">
+        <!-- <aside class="hidden md:block w-full md:w-1/4 px-4 mb-8">
           <Filtros />
-        </aside>
+        </aside> -->
         <div class="w-full md:w-3/4 px-4">
           <Ordenar />
           <ProductosList />
-          <Paginacion />
+          <!-- <Paginacion /> -->
         </div>
       </div>
     </div>
   </body>
+
   <Footer />
+
+  <script is:inline>
+    // Ejecutar script en el navegador para verificar la autenticación
+    (async function () {
+      try {
+        const response = await fetch("http://localhost:3000/api/check-auth", {
+          credentials: "include",
+        });
+        const data = await response.json();
+        const authenticated = data.authenticated;
+
+        // Modificar el contenido del Header según el estado de autenticación
+        if (authenticated) {
+          document.querySelectorAll(".auth-links").forEach((link) => {
+            link.innerHTML = `
+              <a href="./login" id="logout" class="text-red-500 mr-4">Logout</a>
+              <a href="./productos" class="text-white mr-4">Productos</a>
+              <a href="./panel-admin" class="text-white mr-4">Panel</a>
+            `;
+            document
+              .getElementById("logout")
+              .addEventListener("click", async (e) => {
+                e.preventDefault();
+                await fetch("http://localhost:3000/api/logout", {
+                  method: "POST",
+                  credentials: "include",
+                });
+                window.location.href = "/login";
+              });
+          });
+        }
+      } catch (error) {
+        console.error("Error al verificar la autenticación:", error);
+      }
+    })();
+  </script>
 </Layout>
