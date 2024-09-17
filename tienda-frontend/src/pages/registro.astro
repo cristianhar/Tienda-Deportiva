@@ -1,0 +1,178 @@
+---
+import Footer from "../components/footer.astro";
+import Main from "../components/main.astro";
+---
+
+<head>
+  <title>Registro Tienda Deportiva</title>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+
+<body
+  class="bg-gray-100 min-h-screen flex flex-col justify-center items-center"
+>
+  <Main />
+  <div
+    class="bg-white shadow-md rounded max-w-full flex mb-20 mt-4 w-11/12 lg:w-9/12 flex-col lg:flex-row"
+  >
+    <div
+      class="w-full lg:w-1/2 bg-cover bg-center h-64 lg:h-auto"
+      style="background-image: url('https://res.cloudinary.com/dj10yh4z1/image/upload/v1725801836/enter-login-and-password-registration-page-on-screen-sign-in-to-your-account-creative-metaphor-login-page-mobile-app-with-user-page-flat-illustration-vector_agzegr.jpg');"
+    >
+    </div>
+
+    <div
+      class="w-full lg:w-1/2 p-8 flex flex-col justify-center items-center bg-black"
+    >
+      <div class="mb-4 text-center">
+        <h2 class="text-2xl font-semibold text-white">Registro de cuenta</h2>
+        <p class="text-white text-sm">
+          Hazte miembro y disfruta de promociones exclusivas.
+        </p>
+      </div>
+      <hr class="w-1/2 border-t-2 border-gray-300 mb-4" />
+      <form
+        class="w-full max-w-md bg-white p-6 rounded-lg shadow-lg"
+        onsubmit="handleSubmit(event)"
+      >
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="nombre"
+            >Nombre completo</label
+          >
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="nombre"
+            type="text"
+            placeholder="Pepito Perez"
+          />
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="email"
+            >Correo electrónico</label
+          >
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="email"
+            type="email"
+            placeholder="example@gmail.com"
+          />
+        </div>
+        <div class="mb-4">
+          <label
+            class="block text-gray-700 text-sm font-bold mb-2"
+            for="genero"
+          >
+            Género
+          </label>
+          <div class="relative">
+            <select
+              id="genero"
+              class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            >
+              <option value="" disabled selected>Selecciona tu género</option>
+              <option value="masculino">Masculino</option>
+              <option value="femenino">Femenino</option>
+              <option value="otro">Otro</option>
+            </select>
+            <div
+              class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+            >
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label
+            class="block text-gray-700 text-sm font-bold mb-2"
+            for="password">Contraseña</label
+          >
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="password"
+            type="password"
+            placeholder="Ejemplo123*"
+          />
+        </div>
+        <div class="mb-4">
+          <label
+            class="block text-gray-700 text-sm font-bold mb-2"
+            for="confirm-password">Confirmar contraseña</label
+          >
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="confirm-password"
+            type="password"
+            placeholder="Confirmar contraseña"
+          />
+        </div>
+        <div class="flex items-center justify-between">
+          <button
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit">Registrarse</button
+          >
+        </div>
+        <div class="text-center mt-4">
+          <p class="text-sm text-gray-600">
+            ¿Ya tienes una cuenta? <a href="./login" class="text-blue-500"
+              >Inicia sesión aquí</a
+            >
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+  <Footer />
+
+  <script is:inline>
+    const handleSubmit = async (event) => {
+      event.preventDefault();
+
+      const nombre = document.getElementById("nombre").value;
+      const email = document.getElementById("email").value;
+      const genero = document.getElementById("genero").value;
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirm-password").value;
+
+      if (!nombre || !email || !genero || !password || !confirmPassword) {
+        alert("Por favor, complete todos los campos");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert("Las contraseñas no coinciden");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:3000/api/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nombre,
+            email,
+            genero,
+            password,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert(data.message || "Registro exitoso");
+          window.location.href = "/login";
+        } else {
+          alert(data.message || "Hubo un problema con el registro");
+        }
+      } catch (error) {
+        alert(
+          "Error al enviar el formulario. Por favor, inténtelo de nuevo más tarde."
+        );
+        console.error("Error:", error);
+      }
+    };
+  </script>
+</body>

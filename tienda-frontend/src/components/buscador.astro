@@ -1,0 +1,92 @@
+<form id="searchForm" class="w-full max-w-910 mx-auto">
+  <div class="flex items-center w-full">
+    <!-- Select para elegir la categoría de búsqueda -->
+    <select id="searchCategory" class="border rounded-l p-2 bg-gray-300">
+      <option value="All">All</option>
+    </select>
+
+    <div class="relative flex-grow">
+      <input
+        type="text"
+        class="block w-full p-2 border-t border-b border-gray-300 bg-gray-300 pr-10 pl-4"
+        placeholder="Escribe lo que deseas buscar..."
+        id="searchInput"
+      />
+
+      <!-- Botón para limpiar la búsqueda -->
+      <button
+        type="button"
+        class="absolute right-8 top-1/2 transform -translate-y-1/2 text-black"
+        onclick="limpiarBusqueda()"
+      >
+        &#10005;
+      </button>
+
+      <!-- Botón de búsqueda con icono de lupa -->
+      <button
+        type="submit"
+        class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4 bg-transparent border-none"
+      >
+        <svg
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-4.35-4.35M11 4a7 7 0 100 14 7 7 0 000-14z"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="border rounded-r"></div>
+  </div>
+</form>
+
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", function () {
+    const searchText = localStorage.getItem("searchText") || "";
+    const searchCategory = localStorage.getItem("searchCategory") || "All";
+
+    document.getElementById("searchInput").value = searchText;
+    document.getElementById("searchCategory").value = searchCategory;
+
+    document
+      .getElementById("searchInput")
+      .addEventListener("input", function () {
+        localStorage.setItem("searchText", this.value);
+      });
+
+    document
+      .getElementById("searchCategory")
+      .addEventListener("change", function () {
+        localStorage.setItem("searchCategory", this.value);
+      });
+
+    document
+      .getElementById("searchForm")
+      .addEventListener("submit", function (event) {
+        event.preventDefault();
+        const searchText = document.getElementById("searchInput").value;
+        const searchCategory = document.getElementById("searchCategory").value;
+
+        localStorage.setItem("searchText", searchText);
+        localStorage.setItem("searchCategory", searchCategory);
+
+        window.actualizarFiltros(searchText, searchCategory);
+      });
+  });
+
+  function limpiarBusqueda() {
+    document.getElementById("searchInput").value = "";
+    document.getElementById("searchCategory").value = "All";
+
+    localStorage.removeItem("searchText");
+    localStorage.setItem("searchCategory", "All");
+
+    window.actualizarFiltros("", "All");
+  }
+</script>

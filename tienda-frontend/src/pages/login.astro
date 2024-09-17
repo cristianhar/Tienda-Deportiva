@@ -1,0 +1,126 @@
+---
+import Footer from "../components/footer.astro";
+import Main from "../components/main.astro";
+---
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <title>Login Tienda Deportiva</title>
+</head>
+
+<body
+  class="bg-gray-100 min-h-screen flex flex-col justify-center items-center"
+>
+  <Main />
+  <div
+    class="bg-white shadow-md rounded lg:w-1/2 flex justify-center items-center mb-24 mt-4"
+  >
+    <div class="p-8 w-full max-w-md">
+      <div class="mb-4 text-center">
+        <img
+          src="https://res.cloudinary.com/dj10yh4z1/image/upload/v1725801836/cloud-computing-modern-flat-concept-for-web-banner-design-man-enters-password-and-login-to-access-cloud-storage-for-uploading-and-processing-files-illustration-with-isolated-people-scene-free-vector_dn5utp.jpg"
+          alt="Login"
+          class="mx-auto mb-4"
+        />
+        <h2 class="text-2xl font-semibold text-gray-800">Inicio de sesión</h2>
+        <p class="text-gray-600 text-sm">
+          Si ya eres miembro puedes iniciar sesión con tu dirección de correo
+          electrónico y contraseña.
+        </p>
+      </div>
+      <form id="loginForm">
+        <div class="mb-4">
+          <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+            Correo electrónico
+          </label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="email"
+            type="email"
+            placeholder="Correo electrónico"
+          />
+        </div>
+        <div class="mb-4">
+          <label
+            class="block text-gray-700 text-sm font-bold mb-2"
+            for="password"
+          >
+            Contraseña
+          </label>
+          <input
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+            id="password"
+            type="password"
+            placeholder="Contraseña"
+          />
+        </div>
+        <div class="mb-4">
+          <label class="inline-flex items-center">
+            <input type="checkbox" class="form-checkbox text-indigo-600" />
+            <span class="ml-2 text-gray-700 text-sm">Recuérdame</span>
+          </label>
+        </div>
+        <div class="mb-4">
+          <button
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded w-full focus:outline-none focus:shadow-outline"
+            type="button"
+            onclick="handleLogin(event)"
+          >
+            Iniciar
+          </button>
+        </div>
+        <div class="text-center mt-4">
+          <p class="text-sm text-gray-600">
+            ¿No tienes una cuenta? <a href="./registro" class="text-blue-500"
+              >Regístrate aquí</a
+            >
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+  <Footer />
+  <script is:inline>
+    const handleLogin = async (event) => {
+      event.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      if (!email || !password) {
+        alert("Por favor, ingrese su correo y contraseña.");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:3000/api/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // Enviar cookies con la solicitud
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert("Inicio de sesión exitoso");
+          window.location.href = "/productos";
+        } else {
+          alert(data.message || "Hubo un problema con el inicio de sesión");
+        }
+      } catch (error) {
+        alert(
+          "Error al enviar el formulario. Por favor, inténtelo de nuevo más tarde."
+        );
+        console.error("Error:", error);
+      }
+    };
+  </script>
+</body>

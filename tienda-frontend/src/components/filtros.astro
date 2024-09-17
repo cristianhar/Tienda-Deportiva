@@ -1,0 +1,145 @@
+<div class="bg-white p-4 rounded shadow">
+  <div class="flex items-center mb-4">
+    <i class="bi bi-funnel-fill mb-2"></i>
+    <h2 class="text-xl font-semibold mb-2 ml-2">Filtros</h2>
+  </div>
+  <hr />
+
+  <!-- Categoría -->
+  <div class="mb-4">
+    <h3 class="text-sm font-bold mb-2">Categoría</h3>
+    <label class="block text-gray-700">
+      <input
+        type="checkbox"
+        class="mr-2 category-filter"
+        value="Camisetas deportivas"
+      />
+      Camisetas deportivas
+    </label>
+    <label class="block text-gray-700">
+      <input
+        type="checkbox"
+        class="mr-2 category-filter"
+        value="Shorts deportivos"
+      />
+      Shorts deportivos
+    </label>
+    <!-- Agrega más categorías aquí si es necesario -->
+  </div>
+
+  <!-- Stock -->
+  <div class="mb-4">
+    <h3 class="text-sm font-bold mb-2">Estado stock</h3>
+    <label class="block text-gray-700">
+      <input type="checkbox" class="mr-2 stock-filter" value="En stock" />
+      En stock
+    </label>
+    <label class="block text-gray-700">
+      <input type="checkbox" class="mr-2 stock-filter" value="Sin stock" />
+      Sin stock
+    </label>
+  </div>
+
+  <!-- Tamaño -->
+  <div class="mb-4">
+    <h3 class="text-sm font-bold mb-2">Tamaño</h3>
+    <select
+      id="size-filter"
+      class="block w-full mt-1 border border-solid border-gray-300 p-2 rounded"
+    >
+      <option value="">Seleccionar tamaño</option>
+      <option value="Small">Small</option>
+      <option value="Medium">Medium</option>
+      <option value="Large">Large</option>
+    </select>
+  </div>
+
+  <!-- Color -->
+  <div>
+    <h3 class="text-sm font-bold mb-2">Color</h3>
+    <div class="flex items-center space-x-4 mb-2">
+      <span
+        class="h-6 w-6 rounded-full bg-red-500 cursor-pointer color-filter"
+        data-color="Rojo"></span>
+      <span
+        class="h-6 w-6 rounded-full bg-blue-500 cursor-pointer color-filter"
+        data-color="Azul"></span>
+      <!-- Agrega más colores aquí si es necesario -->
+    </div>
+  </div>
+</div>
+<script is:inline>
+  document.addEventListener("DOMContentLoaded", function () {
+    cargarFiltros();
+
+    document.querySelectorAll(".category-filter").forEach((filter) => {
+      filter.addEventListener("change", actualizarFiltros);
+    });
+
+    document.querySelectorAll(".stock-filter").forEach((filter) => {
+      filter.addEventListener("change", actualizarFiltros);
+    });
+
+    document.querySelectorAll(".color-filter").forEach((filter) => {
+      filter.addEventListener("click", function () {
+        this.classList.toggle("selected");
+        actualizarFiltros();
+      });
+    });
+
+    document
+      .getElementById("size-filter")
+      .addEventListener("change", actualizarFiltros);
+  });
+
+  function cargarFiltros() {
+    const categoriafiltro =
+      JSON.parse(localStorage.getItem("categoriafiltro")) || [];
+    const stockfiltro = JSON.parse(localStorage.getItem("stockfiltro")) || [];
+    const tamañofiltro = localStorage.getItem("tamañofiltro") || "";
+    const colorfiltro = JSON.parse(localStorage.getItem("colorfiltro")) || [];
+
+    document.querySelectorAll(".category-filter").forEach((filter) => {
+      if (categoriafiltro.includes(filter.value)) {
+        filter.checked = true;
+      }
+    });
+
+    document.querySelectorAll(".stock-filter").forEach((filter) => {
+      if (stockfiltro.includes(filter.value)) {
+        filter.checked = true;
+      }
+    });
+
+    document.getElementById("size-filter").value = tamañofiltro;
+
+    document.querySelectorAll(".color-filter").forEach((filter) => {
+      if (colorfiltro.includes(filter.dataset.color)) {
+        filter.classList.add("selected");
+      }
+    });
+  }
+
+  function actualizarFiltros() {
+    const categoriafiltro = Array.from(
+      document.querySelectorAll(".category-filter:checked")
+    ).map((filter) => filter.value);
+    const stockfiltro = Array.from(
+      document.querySelectorAll(".stock-filter:checked")
+    ).map((filter) => filter.value);
+    const tamañofiltro = document.getElementById("size-filter").value;
+    const colorfiltro = Array.from(
+      document.querySelectorAll(".color-filter.selected")
+    ).map((filter) => filter.dataset.color);
+
+    localStorage.setItem("categoriafiltro", JSON.stringify(categoriafiltro));
+    localStorage.setItem("stockfiltro", JSON.stringify(stockfiltro));
+    localStorage.setItem("tamañofiltro", tamañofiltro);
+    localStorage.setItem("colorfiltro", JSON.stringify(colorfiltro));
+
+    // Notificar a ProductosList que actualice los productos
+    if (window.actualizarFiltros) {
+      window.actualizarFiltros(); // Llamar a la función en ProductosList
+    }
+  }
+</script>

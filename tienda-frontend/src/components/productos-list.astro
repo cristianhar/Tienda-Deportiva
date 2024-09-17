@@ -1,0 +1,201 @@
+<div
+  id="productos-lista"
+  class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+>
+  <!-- Aquí se insertarán los productos dinámicamente -->
+</div>
+
+<div class="flex justify-between items-center mt-8 w-full mb-10">
+  <div class="flex justify-center w-full">
+    <button
+      class="bg-gray-200 border border-solid border-black text-gray-700 py-2 px-4 rounded"
+      onclick="changePage(1)"
+    >
+      Siguiente página →
+    </button>
+  </div>
+  <div class="flex items-center ml-auto">
+    <input
+      type="number"
+      id="pageInput"
+      class="border text-center w-12 h-10 mr-2 bg-gray-200"
+      value="1"
+      readonly
+    />
+    <span class="text-gray-700 w-10" id="totalPages">de 1</span>
+    <button
+      class="bg-gray-200 text-gray-700 py-2 px-4 rounded ml-4"
+      onclick="changePage(-1)">&lt;</button
+    >
+    <button
+      class="bg-gray-200 text-gray-700 py-2 px-4 rounded ml-2"
+      onclick="changePage(1)">&gt;</button
+    >
+  </div>
+</div>
+
+<script is:inline>
+  let productos = []; // Productos iniciales
+  let productosFiltrados = []; // Productos filtrados por búsqueda
+  let currentPage = 1; // Página inicial
+  let productosPorPagina = 6; // Número de productos por página
+
+  // Verificar autenticación y redirigir si no está autenticado
+  async function verificarAutenticacion() {
+    try {
+      const response = await fetch("http://localhost:3000/api/check-auth", {
+        credentials: "include", // Para incluir las cookies de autenticación
+      });
+      const data = await response.json();
+
+      if (!data.authenticated) {
+        window.location.href = "/login"; // Redirigir si no está autenticado
+      } else {
+        fetchProductos(); // Cargar productos si está autenticado
+      }
+    } catch (error) {
+      console.error("Error al verificar autenticación:", error);
+      window.location.href = "/login"; // Redirigir en caso de error
+    }
+  }
+
+  // Función para cargar los productos
+  async function fetchProductos(orden = "asc") {
+    try {
+      const response = await fetch("http://localhost:3000/api/productos", {
+        credentials: "include", // Incluir las cookies si son necesarias para autenticación
+      });
+      productos = await response.json();
+      productosFiltrados = productos; // Inicialmente no hay filtros
+      ordenarProductos(orden); // Ordenar productos por precio si es necesario
+      renderProductos(); // Mostrar los productos
+      updatePagination(); // Actualizar paginación
+    } catch (error) {
+      console.error("Error al obtener productos:", error);
+      document.getElementById("productos-lista").innerHTML =
+        "<p>Error al cargar los productos.</p>";
+    }
+  }
+
+  // Función para ordenar productos
+  function ordenarProductos(orden) {
+    if (orden === "asc") {
+      productosFiltrados.sort((a, b) => a.precio - b.precio); // Menor a mayor precio
+    } else if (orden === "desc") {
+      productosFiltrados.sort((a, b) => b.precio - a.precio); // Mayor a menor precio
+    }
+    renderProductos(); // Volver a renderizar después de ordenar
+  }
+
+  // Función para renderizar productos
+  function renderProductos() {
+    const productosLista = document.getElementById("productos-lista");
+    const startIndex = (currentPage - 1) * productosPorPagina;
+    const endIndex = startIndex + productosPorPagina;
+    const productosPagina = productosFiltrados.slice(startIndex, endIndex);
+
+    if (productosPagina.length > 0) {
+      productosLista.innerHTML = productosPagina
+        .map(
+          (producto) => `
+        <div class="bg-white p-4 rounded shadow flex flex-col justify-between min-h-[350px] h-auto">
+          <div class="mb-2">
+            <img src="${producto.imagen || "https://via.placeholder.com/200"}" alt="${producto.nombre}" class="w-full h-48 object-contain rounded" />
+          </div>
+          <div class="flex-grow">
+            <h3 class="text-lg font-semibold mb-2">${producto.nombre}</h3>
+            <p class="text-sm text-gray-500 mb-4">${producto.descripcion}</p>
+          </div>
+          <div class="mt-auto">
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-gray-900 text-xl font-bold">$${producto.precio}</span>
+              ${producto.precioOriginal ? `<span class="line-through text-gray-500">$${producto.precioOriginal}</span>` : ""}
+            </div>
+            <div class="flex items-center justify-between">
+              <button onclick="mensajecompra('${producto.nombre}')" class="bg-gray-800 text-white py-2 px-4 rounded">+ Comprar</button>
+             <button class="bg-gray-200 text-gray-800 py-2 px-4 rounded" onclick="openModal()">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M12 21l-3.5-3.5c-1.4-1.4-3.6-4.3-5-8.5-1-2.7-.9-6.3 1.6-8.5C7 2 9.3 1.5 11.6 3L12 3l.4-.1c2.3-1.5 4.6-1 6.5.4 2.4 2.2 2.6 5.8 1.6 8.5-1.4 4.2-3.6 7.1-5 8.5L12 21z"></path>
+              </svg>
+            </button>
+
+            <!-- Modal -->
+            <div id="modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+              <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-lg font-semibold mb-4">¡Gracias por darle me gusta!</h2>
+                <p>Me encanta que te haya gustado este sitio, ha sido creado por <a href= "https://github.com/cristianhar">Cristianhar</a>.</p>
+                <button class="bg-blue-500 text-white px-4 py-2 rounded mt-4" onclick="closeModal()">Cerrar</button>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      `
+        )
+        .join("");
+    } else {
+      productosLista.innerHTML = "<p>No hay productos disponibles.</p>";
+    }
+  }
+
+  // Función para actualizar la paginación
+  function updatePagination() {
+    const totalPaginas = Math.ceil(
+      productosFiltrados.length / productosPorPagina
+    );
+    document.getElementById("totalPages").innerText = `de ${totalPaginas}`;
+    document.getElementById("pageInput").value = currentPage;
+  }
+
+  // Función para cambiar de página
+  function changePage(increment) {
+    currentPage += increment;
+    const totalPaginas = Math.ceil(
+      productosFiltrados.length / productosPorPagina
+    );
+
+    if (currentPage < 1) currentPage = 1;
+    if (currentPage > totalPaginas) currentPage = totalPaginas;
+
+    renderProductos();
+    updatePagination();
+  }
+
+  // Función para generar el enlace de compra por WhatsApp
+  function mensajecompra(productoNombre) {
+    const numeroTelefono = "3192050537"; // Cambia este número por el tuyo
+    const mensaje = encodeURIComponent(
+      `Hola, quiero comprar el producto: ${productoNombre}`
+    );
+    const url = `https://wa.me/${numeroTelefono}?text=${mensaje}`;
+    window.location.href = url;
+  }
+
+  // Función para abrir y cerrar el modal
+  function openModal() {
+    document.getElementById("modal").classList.remove("hidden");
+  }
+
+  function closeModal() {
+    document.getElementById("modal").classList.add("hidden");
+  }
+
+  // Función para actualizar los filtros
+  function actualizarFiltros(searchText, searchCategory) {
+    productosFiltrados = productos.filter((producto) => {
+      const matchNombre = producto.nombre
+        .toLowerCase()
+        .includes(searchText.toLowerCase());
+      const matchCategoria =
+        searchCategory === "All" || producto.categoria === searchCategory;
+      return matchNombre && matchCategoria;
+    });
+
+    currentPage = 1; // Reiniciar a la primera página después de filtrar
+    renderProductos();
+    updatePagination();
+  }
+
+  // Ejecutar la verificación de autenticación al cargar la página
+  verificarAutenticacion();
+</script>

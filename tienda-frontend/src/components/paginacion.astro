@@ -1,0 +1,36 @@
+<body>
+  <!-- Paginación -->
+  <div class="flex justify-between items-center mt-8 w-full mb-10">
+    <div class="flex justify-center w-full">
+      <button
+        class="bg-gray-200 border border-solid border-black text-gray-700 py-2 px-4 rounded"
+        onclick="incrementPage()"
+      >
+        Siguiente página →
+      </button>
+    </div>
+
+    <div class="flex items-center ml-auto">
+      <input
+        type="number"
+        id="pageInput"
+        class="border text-center w-12 h-10 mr-2 bg-gray-200"
+        value="1"
+        readonly
+      />
+      <span class="text-gray-700 w-10 total-pages">de 1</span>
+      <button
+        class="bg-gray-200 text-gray-700 py-2 px-4 rounded ml-4"
+        onclick="changePage(-1)"
+      >
+        &lt;
+      </button>
+      <button
+        class="bg-gray-200 text-gray-700 py-2 px-4 rounded ml-2"
+        onclick="changePage(1)"
+      >
+        &gt;
+      </button>
+    </div>
+  </div>
+</body>
