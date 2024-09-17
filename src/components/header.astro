@@ -21,33 +21,43 @@
             d="M4 6h16M4 12h16m-7 6h7"></path>
         </svg>
       </button>
+
       <!-- Menu desplegable -->
       <div
         id="dropdownMenu"
         class="absolute right-0 top-12 mt-2 w-48 bg-black text-white rounded shadow-lg hidden z-50"
       >
-        <a href="./login" class="block px-4 py-2 text-red-500 hover:bg-gray-800"
-          >Inicio de Sesión</a
-        >
-        <a href="./productos" class="block px-4 py-2 hover:bg-gray-800"
-          >Productos</a
-        >
+        <div class="auth-links">
+          <a
+            href="./login"
+            class="block px-4 py-2 text-red-500 hover:bg-gray-800"
+          >
+            Inicio de Sesión
+          </a>
+          <a href="./productos" class="block px-4 py-2 hover:bg-gray-800">
+            Productos
+          </a>
+        </div>
       </div>
     </div>
   </nav>
 
   <!-- Menu de navegación en pantallas medianas y grandes -->
   <nav class="hidden md:flex space-x-4 ml-auto">
-    <a href="./login" class="text-red-500">Inicio de Sesión</a>
-    <a href="./productos" class="text-white">Productos</a>
+    <div class="auth-links">
+      <a href="./login" class="text-red-500">Inicio de Sesión</a>
+      <a href="./productos" class="text-white">Productos</a>
+    </div>
   </nav>
 </header>
 
 <script>
-  document
-    .getElementById("dropdownButton")
-    ?.addEventListener("click", function () {
-      var menu = document.getElementById("dropdownMenu");
-      menu?.classList.toggle("hidden");
-    });
+  document.addEventListener("DOMContentLoaded", () => {
+    document
+      .getElementById("dropdownButton")
+      ?.addEventListener("click", function () {
+        var menu = document.getElementById("dropdownMenu");
+        menu?.classList.toggle("hidden");
+      });
+  });
 </script>
