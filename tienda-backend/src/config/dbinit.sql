@@ -44,6 +44,6 @@ INSERT INTO productos (nombre, descripcion, precio, precioOriginal, descuento, i
 ('Ciclomotor', 'Ciclomotor electrico para recorridos cortos.', 899.99, 1099.99, NULL, 'https://res.cloudinary.com/dj10yh4z1/image/upload/v1726551455/ciclo_g2vv70.jpg'),
 ('Patines en Linea', 'Patines en linea ajustables para todas las edades.', 59.99, 79.99, NULL, 'https://res.cloudinary.com/dj10yh4z1/image/upload/v1726551458/patines_lc86yo.jpg'),
 ('Tennis de Cuero', 'Tennis elegantes y comodos para uso diario.', 74.99, 94.99, NULL, 'https://res.cloudinary.com/dj10yh4z1/image/upload/v1726551460/teniscuero_ti6lep.jpg'),
-('Short de Bano', 'Short de baño cómodo, ideal para el verano.', 24.99, 34.99, NULL, 'https://res.cloudinary.com/dj10yh4z1/image/upload/v1726551460/short_q0zwbs.jpg'),
+('Short de Bano', 'Short de bano comodo, ideal para el verano.', 24.99, 34.99, NULL, 'https://res.cloudinary.com/dj10yh4z1/image/upload/v1726551460/short_q0zwbs.jpg'),
 ('Sueter de Lana', 'Sueter suave y calido para dias frios.', 54.99, 74.99, NULL, 'https://res.cloudinary.com/dj10yh4z1/image/upload/v1726551460/sueterlana_d0o9ic.jpg'),
-('Cámara de Acción', 'Cámara resistente al agua para aventuras al aire libre.', 199.99, 249.99, NULL, 'https://res.cloudinary.com/dj10yh4z1/image/upload/v1726551454/camaraacion_psnhjk.jpg');
+('Camara de Accion', 'Camara resistente al agua para aventuras al aire libre.', 199.99, 249.99, NULL, 'https://res.cloudinary.com/dj10yh4z1/image/upload/v1726551454/camaraacion_psnhjk.jpg');
