@@ -6,6 +6,7 @@ import Main from "../components/main.astro";
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <title>Login Tienda Deportiva</title>
 </head>
 
@@ -29,7 +30,7 @@ import Main from "../components/main.astro";
           electrónico y contraseña.
         </p>
       </div>
-      <form>
+      <form id="loginForm">
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
             Correo electrónico
@@ -65,6 +66,7 @@ import Main from "../components/main.astro";
           <button
             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded w-full focus:outline-none focus:shadow-outline"
             type="button"
+            onclick="handleLogin(event)"
           >
             Iniciar
           </button>
@@ -80,4 +82,45 @@ import Main from "../components/main.astro";
     </div>
   </div>
   <Footer />
+  <script is:inline>
+    const handleLogin = async (event) => {
+      event.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      if (!email || !password) {
+        alert("Por favor, ingrese su correo y contraseña.");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:3000/api/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // Enviar cookies con la solicitud
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert("Inicio de sesión exitoso");
+          window.location.href = "/productos";
+        } else {
+          alert(data.message || "Hubo un problema con el inicio de sesión");
+        }
+      } catch (error) {
+        alert(
+          "Error al enviar el formulario. Por favor, inténtelo de nuevo más tarde."
+        );
+        console.error("Error:", error);
+      }
+    };
+  </script>
 </body>
