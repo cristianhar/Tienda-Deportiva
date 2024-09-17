@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  mysql_db:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./tienda-backend/src/config/dbinit.sql:/docker-entrypoint-initdb.d/dbinit.sql  # Ruta actualizada
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./tienda-backend
+      dockerfile: Dockerfile
+    container_name: node_api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql_db
+    environment:
+      DB_HOST: mysql_db
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./tienda-frontend
+    ports:
+      - "4321:4321"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
