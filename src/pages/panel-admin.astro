@@ -1,0 +1,224 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Footer from "../components/footer.astro";
+import Header from "../components/header.astro";
+import Paginacion from "../components/paginacion.astro";
+---
+
+<Layout title="Panel Administrativo">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel Administrativo</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+
+  <Header />
+
+  <div class="container mx-auto p-4">
+    <!-- Panel Administrativo -->
+    <div class="my-8" id="admin-panel">
+      <h2 class="text-2xl font-semibold mb-4">Panel Administrativo</h2>
+      <button
+        class="bg-black text-white px-4 py-2 rounded"
+        onclick="window.location.href='./crear-producto'"
+      >
+        + Crear Producto
+      </button>
+    </div>
+
+    <!-- Lista de productos -->
+    <div
+      id="productos-lista"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+      <!-- Aquí se insertarán los productos dinámicamente -->
+    </div>
+
+    <!-- Paginación -->
+    <div class="flex justify-between items-center mt-8 w-full mb-10">
+      <div class="flex justify-center w-full">
+        <button
+          class="bg-gray-200 border border-solid border-black text-gray-700 py-2 px-4 rounded"
+          onclick="changePage(1)"
+        >
+          Siguiente página →
+        </button>
+      </div>
+      <div class="flex items-center ml-auto">
+        <input
+          type="number"
+          id="pageInput"
+          class="border text-center w-12 h-10 mr-2 bg-gray-200"
+          value="1"
+        />
+        <span class="text-gray-700 w-10" id="totalPages">de 1</span>
+        <button
+          class="bg-gray-200 text-gray-700 py-2 px-4 rounded ml-4"
+          onclick="changePage(-1)">&lt;</button
+        >
+        <button
+          class="bg-gray-200 text-gray-700 py-2 px-4 rounded ml-2"
+          onclick="changePage(1)">&gt;</button
+        >
+      </div>
+    </div>
+  </div>
+
+  <Footer />
+
+  <script is:inline>
+    let productos = [];
+    let currentPage = 1;
+    let productosPorPagina = 6;
+
+    // Verificar autenticación y modificar el Header
+    async function checkAuthAndUpdateHeader() {
+      try {
+        const response = await fetch("http://localhost:3000/api/check-auth", {
+          credentials: "include",
+        });
+        const data = await response.json();
+        const authenticated = data.authenticated;
+
+        // Modificar el contenido del Header según el estado de autenticación
+        if (authenticated) {
+          document.querySelectorAll(".auth-links").forEach((link) => {
+            link.innerHTML = `
+              <a href="./login" id="logout" class="text-red-500 mr-4">Logout</a>
+              <a href="./productos" class="text-white mr-4">Productos</a>
+              <a href="./panel-admin" class="text-white mr-4">Panel</a>
+            `;
+
+            document
+              .getElementById("logout")
+              .addEventListener("click", async (e) => {
+                e.preventDefault();
+                await fetch("http://localhost:3000/api/logout", {
+                  method: "POST",
+                  credentials: "include",
+                });
+                window.location.href = "/login";
+              });
+          });
+
+          // Cargar los productos si el usuario está autenticado
+          fetchProductos();
+        } else {
+          window.location.href = "/login"; // Redirigir si no está autenticado
+        }
+      } catch (error) {
+        console.error("Error al verificar la autenticación:", error);
+      }
+    }
+
+    // Función para cargar los productos
+    async function fetchProductos() {
+      try {
+        const response = await fetch("http://localhost:3000/api/productos", {
+          credentials: "include",
+        });
+        productos = await response.json();
+        renderProductos();
+        updatePagination();
+      } catch (error) {
+        console.error("Error al obtener productos:", error);
+      }
+    }
+
+    // Función para renderizar productos
+    function renderProductos() {
+      const productosLista = document.getElementById("productos-lista");
+      const startIndex = (currentPage - 1) * productosPorPagina;
+      const endIndex = startIndex + productosPorPagina;
+      const productosPagina = productos.slice(startIndex, endIndex);
+
+      if (productosPagina.length > 0) {
+        productosLista.innerHTML = productosPagina
+          .map(
+            (producto) => `
+              <div class="bg-white p-4 rounded shadow flex flex-col justify-between min-h-[350px] h-auto">
+  <div class="mb-2">
+    <img src="${producto.imagen || "https://via.placeholder.com/200"}" alt="${producto.nombre}" class="w-full h-48 object-contain rounded"/>
+  </div>
+  <div class="flex-grow">
+    <h3 class="text-lg font-semibold mb-2">${producto.nombre}</h3>
+    <p class="text-sm text-gray-500 mb-4">${producto.descripcion}</p>
+  </div>
+  <div class="mt-auto">
+    <div class="flex items-center justify-between mb-4">
+      <span class="text-gray-900 text-xl font-bold">$${producto.precio}</span>
+      ${producto.precioOriginal ? `<span class="line-through text-gray-500">$${producto.precioOriginal}</span>` : ""}
+    </div>
+    <div class="flex items-center justify-between">
+      <button class="bg-black text-white py-2 px-4 rounded" onclick="editarProducto(${producto.id})">+ Editar</button>
+      <button class="bg-red-500 text-white py-2 px-4 rounded" onclick="eliminarProducto(${producto.id})">- Eliminar</button>
+    </div>
+  </div>
+</div>
+
+            `
+          )
+          .join("");
+      } else {
+        productosLista.innerHTML = "<p>No hay productos disponibles.</p>";
+      }
+    }
+
+    // Función para actualizar la paginación
+    function updatePagination() {
+      const totalPaginas = Math.ceil(productos.length / productosPorPagina);
+      document.getElementById("totalPages").innerText = `de ${totalPaginas}`;
+      document.getElementById("pageInput").value = currentPage;
+    }
+
+    // Función para cambiar de página
+    function changePage(increment) {
+      const totalPaginas = Math.ceil(productos.length / productosPorPagina);
+      currentPage += increment;
+
+      if (currentPage < 1) currentPage = 1;
+      if (currentPage > totalPaginas) currentPage = totalPaginas;
+
+      renderProductos();
+      updatePagination();
+    }
+
+    // Función para eliminar producto
+    async function eliminarProducto(id) {
+      const confirmar = confirm(
+        "¿Estás seguro de que deseas eliminar este producto?"
+      );
+      if (confirmar) {
+        try {
+          const response = await fetch(
+            `http://localhost:3000/api/productos/${id}`,
+            {
+              method: "DELETE",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (response.ok) {
+            fetchProductos(); // Recargar los productos después de eliminar
+          } else {
+            alert("Error al eliminar el producto.");
+          }
+        } catch (error) {
+          console.error("Error al eliminar producto:", error);
+        }
+      }
+    }
+
+    // Función para editar producto (redirige a una página de edición)
+    function editarProducto(id) {
+      window.location.href = `/editar-producto/${id}`;
+    }
+
+    // Ejecutar la función para verificar autenticación y cargar el panel
+    checkAuthAndUpdateHeader();
+  </script>
+</Layout>
