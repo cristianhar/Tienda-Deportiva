@@ -3,10 +3,28 @@
 ¡Bienvenido al proyecto Tienda Deportiva! Este es un sitio web de comercio electrónico desarrollado utilizando **Tailwind**, **Astro**, **MySQL**, **JavaScript**, **Node.js**,**Cloudinary**,**Express** y **TypeScript**.
 
 ## Previews
-
 ![Vista Productos](preview/productos.png)
+
+---
+
 ![Vista de Panel](preview/panel.png)
+
+---
+
+![Login](preview/login.png)
+
+---
+
+![Registro](preview/registro.png)
+
+---
+
+![Sitio Responsive](preview/responsive.png)
+
+---
+
 ![Agradecimientos](preview/gracias.png)
+
 
 ## Requisitos
 
