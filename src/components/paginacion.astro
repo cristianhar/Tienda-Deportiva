@@ -1,60 +1,36 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Paginación</title>
-    <script>
-      function incrementPage() {
-        var pageInput = document.getElementById("pageInput");
-
-        if (pageInput instanceof HTMLInputElement) {
-          var currentValue = parseInt(pageInput.value);
-          if (currentValue < 55) {
-            pageInput.value = (currentValue + 1).toString();
-          }
-        } else {
-          console.error("El elemento no es un HTMLInputElement");
-        }
-      }
-    </script>
-    <style>
-      /* Agrega tus estilos aquí */
-    </style>
-  </head>
-  <body>
-    <!-- Paginación -->
-    <div class="flex justify-between items-center mt-8 w-full mb-10">
-      <!-- Contenedor para centrar el botón y el resto de la paginación -->
-      <div class="flex justify-center w-full">
-        <!-- Botón "Siguiente página" centrado -->
-        <button
-          class="bg-gray-200 border border-solid border-black text-gray-700 py-2 px-4 rounded"
-          onclick="incrementPage()"
-        >
-          Siguiente página →
-        </button>
-      </div>
-
-      <!-- Paginación alineada a la derecha -->
-      <div class="flex items-center ml-auto">
-        <!-- Input para el número de página -->
-        <input
-          type="number"
-          id="pageInput"
-          class="border text-center w-12 h-10 mr-2 bg-gray-200"
-          value="1"
-        />
-        <!-- Texto indicando la cantidad de páginas -->
-        <span class="text-gray-700 w-10">de 55</span>
-        <!-- Botones de navegación de la paginación -->
-        <button class="bg-gray-200 text-gray-700 py-2 px-4 rounded ml-4">
-          &lt;
-        </button>
-        <button class="bg-gray-200 text-gray-700 py-2 px-4 rounded ml-2">
-          &gt;
-        </button>
-      </div>
+<body>
+  <!-- Paginación -->
+  <div class="flex justify-between items-center mt-8 w-full mb-10">
+    <div class="flex justify-center w-full">
+      <button
+        class="bg-gray-200 border border-solid border-black text-gray-700 py-2 px-4 rounded"
+        onclick="incrementPage()"
+      >
+        Siguiente página →
+      </button>
     </div>
-  </body>
-</html>
+
+    <div class="flex items-center ml-auto">
+      <input
+        type="number"
+        id="pageInput"
+        class="border text-center w-12 h-10 mr-2 bg-gray-200"
+        value="1"
+        readonly
+      />
+      <span class="text-gray-700 w-10 total-pages">de 1</span>
+      <button
+        class="bg-gray-200 text-gray-700 py-2 px-4 rounded ml-4"
+        onclick="changePage(-1)"
+      >
+        &lt;
+      </button>
+      <button
+        class="bg-gray-200 text-gray-700 py-2 px-4 rounded ml-2"
+        onclick="changePage(1)"
+      >
+        &gt;
+      </button>
+    </div>
+  </div>
+</body>
