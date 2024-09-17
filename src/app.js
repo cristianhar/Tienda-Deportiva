@@ -52,12 +52,13 @@ async function iniciarServer() {
                 password: process.env.DB_PASSWORD,
                 database: process.env.DB_NAME
             });
-            console.log('Conexión a MySQL exitosa');
+          console.log('Conexión a MySQL exitosa');
+          console.log("Conexión a la base de datos exitosa");
             break; // Conexión exitosa, salir del bucle
         } catch (error) {
             console.error('Error conectando a MySQL, reintentando...', error);
             intentos -= 1;
-            await new Promise(resolve => setTimeout(resolve, 10000)); // Espera 10 segundos
+            await new Promise(resolve => setTimeout(resolve, 30000)); // Espera 10 segundos
 
         }
     }
