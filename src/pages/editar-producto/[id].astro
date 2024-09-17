@@ -1,0 +1,179 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/footer.astro";
+import Header from "../../components/header.astro";
+
+// Obtener el ID del parámetro de la ruta
+const { id } = Astro.params;
+---
+
+<Layout title="Editar Producto">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editar Producto</title>
+  </head>
+  <Header />
+  <body>
+    <div class="container mx-auto p-4">
+      <h2 class="text-2xl font-semibold mb-4">Editar Producto</h2>
+
+      <form id="editar-producto-form" data-product-id="">
+        <div class="mb-4">
+          <label for="nombre" class="block text-gray-700">
+            Nombre del Producto
+          </label>
+          <input
+            type="text"
+            id="nombre"
+            name="nombre"
+            class="w-full p-2 border border-gray-300 rounded"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label for="descripcion" class="block text-gray-700">
+            Descripción
+          </label>
+          <textarea
+            id="descripcion"
+            name="descripcion"
+            class="w-full p-2 border border-gray-300 rounded"></textarea>
+        </div>
+
+        <!-- Campo de Precio con valores grandes permitidos -->
+        <div class="mb-4">
+          <label for="precio" class="block text-gray-700"> Precio </label>
+          <input
+            type="number"
+            id="precio"
+            name="precio"
+            class="w-full p-2 border border-gray-300 rounded"
+            min="0"
+            max="100000000"
+            step="0.01"
+            placeholder="Introduce el precio"
+          />
+        </div>
+
+        <!-- Campo de Precio Original con valores grandes permitidos -->
+        <div class="mb-4">
+          <label for="precioOriginal" class="block text-gray-700">
+            Precio Original (Opcional)
+          </label>
+          <input
+            type="number"
+            id="precioOriginal"
+            name="precioOriginal"
+            class="w-full p-2 border border-gray-300 rounded"
+            min="0"
+            max="100000000"
+            step="0.01"
+            placeholder="Introduce el precio original"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label for="imagen" class="block text-gray-700"> Imagen (URL) </label>
+          <input
+            type="text"
+            id="imagen"
+            name="imagen"
+            class="w-full p-2 border border-gray-300 rounded"
+          />
+        </div>
+
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+          Guardar Cambios
+        </button>
+      </form>
+    </div>
+  </body>
+
+  <script is:inline>
+    document.addEventListener("DOMContentLoaded", async function () {
+      const form = document.getElementById("editar-producto-form");
+      const productId = window.location.pathname.split("/").pop(); // Extrae el ID del producto de la URL
+
+      if (!form || !productId) {
+        console.error("Formulario o ID del producto no encontrados.");
+        return;
+      }
+
+      form.setAttribute("data-product-id", productId);
+
+      try {
+        const response = await fetch(
+          `http://localhost:3000/api/productos/${productId}`,
+          {
+            method: "GET",
+            credentials: "include", // Incluir credenciales si es necesario
+          }
+        );
+
+        if (response.status === 401) {
+          console.error("No autorizado. Verifica la sesión o credenciales.");
+          alert("No autorizado. Verifica tu sesión.");
+          return;
+        }
+
+        if (!response.ok) throw new Error("Error en la respuesta de la API");
+
+        const producto = await response.json();
+        console.log("Producto recibido desde la API:", producto);
+
+        document.getElementById("nombre").value = producto.nombre || "";
+        document.getElementById("descripcion").value =
+          producto.descripcion || "";
+        document.getElementById("precio").value = producto.precio || "";
+        document.getElementById("precioOriginal").value =
+          producto.precioOriginal || ""; // Agregado
+        document.getElementById("imagen").value = producto.imagen || "";
+      } catch (error) {
+        console.error("Error al obtener el producto:", error);
+      }
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const nombre = document.getElementById("nombre").value;
+        const descripcion = document.getElementById("descripcion").value;
+        const precio = document.getElementById("precio").value;
+        const precioOriginal = document.getElementById("precioOriginal").value; // Agregado
+        const imagen = document.getElementById("imagen").value;
+
+        const formData = {
+          nombre,
+          descripcion,
+          precio,
+          precioOriginal: precioOriginal || null, // Agregado
+          imagen,
+        };
+
+        try {
+          const response = await fetch(
+            `http://localhost:3000/api/productos/${productId}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              credentials: "include",
+              body: JSON.stringify(formData),
+            }
+          );
+
+          if (response.ok) {
+            alert("Producto actualizado con éxito");
+            window.location.href = "/panel-admin";
+          } else {
+            alert("Error al actualizar el producto");
+          }
+        } catch (error) {
+          console.error("Error al actualizar el producto:", error);
+          alert("Error en el servidor");
+        }
+      });
+    });
+  </script>
+</Layout>
