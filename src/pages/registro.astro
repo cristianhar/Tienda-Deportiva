@@ -6,6 +6,7 @@ import Main from "../components/main.astro";
 <head>
   <title>Registro Tienda Deportiva</title>
   <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 
@@ -32,7 +33,10 @@ import Main from "../components/main.astro";
         </p>
       </div>
       <hr class="w-1/2 border-t-2 border-gray-300 mb-4" />
-      <form class="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
+      <form
+        class="w-full max-w-md bg-white p-6 rounded-lg shadow-lg"
+        onsubmit="handleSubmit(event)"
+      >
         <div class="mb-4">
           <label class="block text-gray-700 text-sm font-bold mb-2" for="nombre"
             >Nombre completo</label
@@ -106,7 +110,7 @@ import Main from "../components/main.astro";
         <div class="flex items-center justify-between">
           <button
             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="button">Registrarse</button
+            type="submit">Registrarse</button
           >
         </div>
         <div class="text-center mt-4">
@@ -120,4 +124,55 @@ import Main from "../components/main.astro";
     </div>
   </div>
   <Footer />
+
+  <script is:inline>
+    const handleSubmit = async (event) => {
+      event.preventDefault();
+
+      const nombre = document.getElementById("nombre").value;
+      const email = document.getElementById("email").value;
+      const genero = document.getElementById("genero").value;
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirm-password").value;
+
+      if (!nombre || !email || !genero || !password || !confirmPassword) {
+        alert("Por favor, complete todos los campos");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert("Las contraseñas no coinciden");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:3000/api/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nombre,
+            email,
+            genero,
+            password,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert(data.message || "Registro exitoso");
+          window.location.href = "/login";
+        } else {
+          alert(data.message || "Hubo un problema con el registro");
+        }
+      } catch (error) {
+        alert(
+          "Error al enviar el formulario. Por favor, inténtelo de nuevo más tarde."
+        );
+        console.error("Error:", error);
+      }
+    };
+  </script>
 </body>
